@@ -1,0 +1,9 @@
+import pygame
+from Screen import resize_screen
+pygame.init()
+
+if __name__ == '__main__':
+    infos = pygame.display.Info()
+    pygame.display.set_caption("Clickator")
+    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load("assets/logo.png"), (32, 32)))
+    resize_screen.set_mode((min(infos.current_w, 1920)*0.6, min(infos.current_h, 1080)*0.6), pygame.RESIZABLE)
