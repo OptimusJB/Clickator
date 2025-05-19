@@ -3,16 +3,20 @@ import Constants
 import pygame
 from ListMacroView import list_macro_view
 import sys
+from MacroView import macro_view
 pygame.init()
 
 class Accueil:
     def __init__(self, state):
         self.state = state
-        self.work_elements = [list_macro_view]
+        self.work_elements = [macro_view, list_macro_view]
 
     def run(self):
+        clock = pygame.time.Clock()
         boucle = True
         while boucle:
+            clock.tick(30)
+
             # blit du fond
             resize_screen.fill(Constants.beige)
 
