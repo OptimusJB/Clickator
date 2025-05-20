@@ -157,13 +157,14 @@ class ListMacroView:
                             self.charged = False
         
         elif event.type == pygame.MOUSEWHEEL:
-            for i in range(abs(event.y)):
-                if event.y < 0:
-                    if self.y + self.y_offset > self.rect_affichage.bottom:
-                        self.y_offset -= 30
-                
-                elif event.y > 0:
-                    if self.y_offset < 0:
-                        self.y_offset += 30
+            if self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())):
+                for i in range(abs(event.y)):
+                    if event.y < 0:
+                        if self.y + self.y_offset > self.rect_affichage.bottom:
+                            self.y_offset -= 30
+                    
+                    elif event.y > 0:
+                        if self.y_offset < 0:
+                            self.y_offset += 30
         
 list_macro_view = ListMacroView()
