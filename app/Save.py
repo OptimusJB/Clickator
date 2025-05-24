@@ -12,13 +12,13 @@ class Save:
         fichier.close()
 
         self.contenu = [nom_fichier]
+        fichier_read = chiffreur.dechiffrer(fichier_read)
         for element in fichier_read.split("&slelement&"):
             truc = element.split("&slvaleur&")
             if not truc == [""]:
                 self.contenu.append(truc)
         
         # chargement
-        print(self.contenu)
         liste = [self.contenu[0]]
         for element in self.contenu[1:]:
             liste.append(self.conversion[element[0]](element[1:]))
@@ -27,6 +27,9 @@ class Save:
         return self.contenu
     
     def sauvegarder(self, contenu:list):
+        """
+        liste de la forme [nom macro, element, element, element]
+        """
         chaine = ""
         for element in contenu[1:]:
             valeurs = ""
@@ -42,3 +45,4 @@ class Save:
         fichier.close()
 
 save = Save()
+save.sauvegarder(["test sauvegarde", Clic([1, 2, 3, 4, 5])])

@@ -42,6 +42,8 @@ class Chiffrement:
     
     def dechiffrer(self, texte_numero:str):
         assert type(texte_numero) == str, "texte_numero doit être un texte"
+        if texte_numero == "":
+            return ""
         texte_numero = str(int(texte_numero[1:]) // int(texte_numero[0]))
 
         # split du texte

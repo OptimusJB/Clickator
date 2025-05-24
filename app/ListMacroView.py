@@ -143,10 +143,11 @@ class ListMacroView:
                 
                 elif self.creation_btn_rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
                     if not self.texte_creation.texte + ".txt" in os.listdir("data/"):
-                        fichier = open("data/" + self.texte_creation.texte + ".txt", "w")
-                        fichier.close()
-                        self.texte_creation.texte = ""
-                        self.charged = False
+                        if not len(self.texte_creation.texte) == 0:
+                            fichier = open("data/" + self.texte_creation.texte + ".txt", "w")
+                            fichier.close()
+                            self.texte_creation.texte = ""
+                            self.charged = False
             
             elif event.button == 3:
                 if self.rect_affichage.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
