@@ -42,7 +42,8 @@ class Screen:
         équivalent de pygame.display.flip()
         """
         infos = pygame.display.Info()
-        self.screen.blit(pygame.transform.smoothscale(self.screen_calcul, (infos.current_w, infos.current_h)), (0,0))
+        new_surface = pygame.transform.smoothscale(self.screen_calcul, (infos.current_w, infos.current_h))
+        self.screen.blit(new_surface, (0,0))
         pygame.display.flip()
 
     def get_calcul_mouse_cos(self, mouse_cos):

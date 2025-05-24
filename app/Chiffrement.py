@@ -38,6 +38,9 @@ class Chiffrement:
         for lettre in texte:
             texte_final = texte_final + self.find_numero(lettre)
         multiple = random.randint(1, 9)
+
+        if texte_final == "":
+            return ""
         return str(multiple) + str(int(texte_final) * multiple)
     
     def dechiffrer(self, texte_numero:str):
