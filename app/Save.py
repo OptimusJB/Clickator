@@ -45,4 +45,3 @@ class Save:
         fichier.close()
 
 save = Save()
-save.sauvegarder(["test sauvegarde", Clic([1, 2, 3, 4, 5])])

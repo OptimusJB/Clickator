@@ -171,6 +171,7 @@ class MacroView:
         clock = pygame.time.Clock()
         boucle = True
         while boucle:
+            clock.tick(30)
             resize_screen.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -234,6 +235,7 @@ class MacroView:
                             # ouverture de la page de l'action cliquée
                             index_rect = self.rects_actions.index(rect)
                             self.action_ouverte = self.liste_actions[index_rect]
+                            self.action_ouverte.charged = False
 
             elif event.button == 3:
                 if self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
@@ -251,7 +253,9 @@ class MacroView:
 
         # appel du listen_entry potentiel de l'action
         if not self.action_ouverte == None:
-            if self.action_ouverte.listen_entry() == "changement":
-                self.saved = False
+            if self.action_ouverte.listen_entry(event) == "changement":
+                self.action_ouverte.charged = False
+                save.sauvegarder([self.nom_macro] + self.liste_actions)
+                #self.saved = False
 
 macro_view = MacroView()

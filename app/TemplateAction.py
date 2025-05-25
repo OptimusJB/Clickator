@@ -1,15 +1,12 @@
 from Screen import resize_screen
 import Constants
 import pygame
-from AskText import AskText
 pygame.init()
 class Clic:
     def __init__(self, liste_valeurs):
         self.nom = "Clic"
         self.charged = False
         self.valeurs = liste_valeurs    # très probablement une liste de str
-        # de la forme [normal/maintenu, gauche/milieu/droit, appuyer/relacher]
-
         self.rect_dimensions = pygame.rect.Rect(20 + 500 + 40 + 500 + 40, 100, 800, 1080 - 100 - 40)
 
         self.rect_affichage = self.rect_dimensions.copy()
@@ -25,8 +22,6 @@ class Clic:
         rect_surface.x = 0
         pygame.draw.rect(self.surface_titre, Constants.saumon2, rect_surface, border_radius=50)
 
-        self.liste_elements = [AskText((1500, 100), "test", self.valeurs[0], int)]
-
     def blit(self):
         resize_screen.draw_rect(Constants.saumon, self.rect_dimensions, 50)
 
@@ -37,16 +32,7 @@ class Clic:
         texte_rect.center = self.rect_titre.center
         resize_screen.blit(texte, texte_rect.topleft)
 
-        # blit éléments
-        for element in self.liste_elements:
-            resize_screen.blit(element.get_image(), element.pos)
-
     def listen_entry(self, event):
-
-        for element in self.liste_elements:
-            if element.listen_entry(event) == "changement":
-                index_element = self.liste_elements.index(element)
-                # potentiels changements de la valeur à faire ici
-
-                self.valeurs[index_element] = element.valeur
-                return "changement" # retourne vers MacroView pour la sauvegarde
+        if not self.charged:    # premier chargement du blit au cas où
+            self.blit()
+            self.charged = True

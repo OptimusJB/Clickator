@@ -2,6 +2,7 @@ from Screen import resize_screen
 import Constants
 import os
 import pygame
+import Chiffrement
 from TextZone import TextZone
 from MacroView import macro_view
 pygame.init()
@@ -143,7 +144,13 @@ class ListMacroView:
                 
                 elif self.creation_btn_rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
                     if not self.texte_creation.texte + ".txt" in os.listdir("data/"):
-                        if not len(self.texte_creation.texte) == 0:
+                        # check des lettres, pour voi si elle sont autorisées
+                        can_create = True
+                        for element in self.texte_creation.texte:
+                            if not element in Chiffrement.all_lettres:
+                                can_create = False
+
+                        if can_create and not len(self.texte_creation.texte) == 0:
                             fichier = open("data/" + self.texte_creation.texte + ".txt", "w")
                             fichier.close()
                             self.texte_creation.texte = ""
