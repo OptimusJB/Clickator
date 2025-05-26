@@ -67,7 +67,6 @@ class ListMacroView:
             texte_rect = texte.get_rect()
             texte_rect.center = self.rect_affichage.center
             resize_screen.blit(texte, texte_rect.topleft)
-            return None
 
         # blit des macros
         self.y = 150

@@ -1,12 +1,17 @@
 from Screen import resize_screen
 import Constants
 import pygame
+from AskText import AskText
+from Switch import Switch
 pygame.init()
-class Clic:
+class Wait:
     def __init__(self, liste_valeurs):
-        self.nom = "Clic"
+        self.nom = "Wait"
         self.charged = False
         self.valeurs = liste_valeurs    # très probablement une liste de str
+        # de la forme [type attente (temps/bouton), bouton d'attente, temps d'attente (en ms), aléatoire (oui/non), dispersion si aléatoire (en ms)]
+        # tout est en str
+
         self.rect_dimensions = pygame.rect.Rect(20 + 500 + 40 + 500 + 40, 100, 800, 1080 - 100 - 40)
 
         self.rect_affichage = self.rect_dimensions.copy()
@@ -21,6 +26,11 @@ class Clic:
         rect_surface.y = - self.rect_affichage.height
         rect_surface.x = 0
         pygame.draw.rect(self.surface_titre, Constants.saumon2, rect_surface, border_radius=50)
+        self.liste_elements = [Switch((1500, 120), "type attente", ["temps", "bouton"], self.valeurs[0]), # la liste doit être dans le bon ordre
+        AskText((1500, 220), "bouton d'attente", self.valeurs[1], str),
+        AskText((1500, 320), "temps d'attente (en ms)", self.valeurs[2], int), 
+        Switch((1500, 420), "aléatoire", ["oui", "non"], self.valeurs[3]),
+        AskText((1500, 520), "dispersion si aléatoire (en ms)", self.valeurs[4], int)]
 
     def blit(self):
         resize_screen.draw_rect(Constants.saumon, self.rect_dimensions, 50)
@@ -32,7 +42,17 @@ class Clic:
         texte_rect.center = self.rect_titre.center
         resize_screen.blit(texte, texte_rect.topleft)
 
+        # blit éléments
+        for element in self.liste_elements:
+            resize_screen.blit(element.get_image(), element.pos)
+
     def listen_entry(self, event):
-        if not self.charged:    # premier chargement du blit au cas où
-            self.blit()
-            self.charged = True
+
+        for element in self.liste_elements: # switch ou asktext
+            assert self.liste_elements.count(element) == 1, "deux éléments ont le même nom"
+            if element.listen_entry(event) == "changement":
+                index_element = self.liste_elements.index(element)
+                # potentiels changements de la valeur à faire ici
+
+                self.valeurs[index_element] = element.valeur
+                return "changement" # retourne vers MacroView pour la sauvegarde

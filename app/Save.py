@@ -1,10 +1,11 @@
 from Chiffrement import chiffreur
 from Clic import Clic
+from Wait import Wait
 
 class Save:
     def __init__(self):
         self.contenu = None
-        self.conversion = {"Clic":Clic}    # dictionnaire : clé = nom, valeur = objet correspondant au nom : utilisé pour load_sauvegarde
+        self.conversion = {"Clic":Clic, "Wait":Wait}    # dictionnaire : clé = nom, valeur = objet correspondant au nom : utilisé pour load_sauvegarde
     
     def load_sauvegarde(self, nom_fichier):   # nom fichier sans extension
         fichier = open("data/" + nom_fichier + ".txt", "r")

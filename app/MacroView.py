@@ -3,6 +3,7 @@ from Screen import resize_screen
 from Save import save
 import Constants
 from Clic import Clic
+from Wait import Wait
 import pygame
 pygame.init()
 
@@ -135,7 +136,7 @@ class MacroView:
         """
         écran à part pour l'ajout d'action
         """
-        liste_actions = ["Clic", "Clic2", "Clic3", "tp image", "Clic5", "Clic6", "Clic7"]
+        liste_actions = ["Clic", "Wait"]
 
         fond_noir = pygame.surface.Surface((1920, 1080)).convert()
         fond_noir.fill((0, 0, 0))
@@ -192,8 +193,10 @@ class MacroView:
         # ajout dans self.liste_actions
         action_finale = None
         if action_choisie == "Clic":
-            action_finale = Clic(["non", 0, 0])
-        # à continuer
+            action_finale = Clic(["normal", "gauche", "appuyer"])
+        elif action_choisie == "Wait":
+            action_finale = Wait(["temps", "a", "1000", "non", "0"])
+        # à continuer : ajouter des instances d'action ici
         else:
             raise ValueError("action choisie non prise en charge")
 

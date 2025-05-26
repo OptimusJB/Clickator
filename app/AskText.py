@@ -12,7 +12,8 @@ class AskText:
         self.type_attendu = type_attendu
         self.valeur = valeur
         self.pos = pos
-        self.size = (1, 1)
+        self.size = None
+        self.maj_location()
 
     def get_image(self):
         # cette méthode met également à jour self.size
@@ -32,6 +33,13 @@ class AskText:
         #print(rect, texte_rect)
         surface.blit(texte, (texte_rect.x + 10, texte_rect.y + 10))
         return surface
+    
+    def maj_location(self):
+        texte = Constants.police30.render(self.texte + " : " + str(self.valeur), True, "white")
+        self.size = texte.get_size()
+        rect = pygame.rect.Rect(self.pos, (self.size[0] + 20, self.size[1] + 20))
+        rect.centerx = 1500
+        self.pos = rect.topleft
 
     def ask(self):
         # screen de choix
@@ -100,11 +108,13 @@ class AskText:
                                     if not lettre in Chiffrement.all_lettres:
                                         can_change = False
 
-                                if can_change:
+                                if can_change:  # permet accessoirement de ne pas accepter le -
                                     # changement de valeur
+                                    #print(str(self.type_attendu(texte.get_text())))
                                     try:
                                         test = self.type_attendu(texte.get_text())
                                         self.valeur = str(test)
+                                        self.maj_location()
                                         return None
                                     except:
                                         pass
