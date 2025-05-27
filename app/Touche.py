@@ -4,13 +4,12 @@ import pygame
 from AskText import AskText
 from Switch import Switch
 pygame.init()
-class Wait:
+class Touche:
     def __init__(self, liste_valeurs):
-        self.nom = "Wait"
+        self.nom = "Touche"
         self.charged = False
         self.valeurs = liste_valeurs    # très probablement une liste de str
-        # de la forme [type attente (temps/bouton), bouton d'attente, temps d'attente (en ms), aléatoire (oui/non), dispersion si aléatoire (en ms)]
-        # tout est en str
+        # de la forme [normal/maintenu, touche, appuyer/relacher]
 
         self.rect_dimensions = pygame.rect.Rect(20 + 500 + 40 + 500 + 40, 100, 800, 1080 - 100 - 40)
 
@@ -26,11 +25,9 @@ class Wait:
         rect_surface.y = - self.rect_affichage.height
         rect_surface.x = 0
         pygame.draw.rect(self.surface_titre, Constants.saumon2, rect_surface, border_radius=50)
-        self.liste_elements = [Switch((1500, 120), "type attente", ["temps", "bouton"], self.valeurs[0]), # la liste doit être dans le bon ordre
-        AskText((1500, 220), "bouton(s) d'attente", self.valeurs[1], str),
-        AskText((1500, 320), "temps d'attente (en ms)", self.valeurs[2], int), 
-        Switch((1500, 420), "aléatoire", ["oui", "non"], self.valeurs[3]),
-        AskText((1500, 520), "dispersion si aléatoire (en ms)", self.valeurs[4], int)]
+        self.liste_elements = [Switch((1500, 120), "type clic", ["normal", "maintenu"], self.valeurs[0]),   # la liste doit être dans le bon ordre
+        AskText((1500, 320), "touche(s)", self.valeurs[1], str),
+        Switch((1500, 220), "si clic maintenu", ["appuyer", "relacher"], self.valeurs[2])]
 
     def blit(self):
         resize_screen.draw_rect(Constants.saumon, self.rect_dimensions, 50)

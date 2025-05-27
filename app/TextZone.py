@@ -45,8 +45,9 @@ class TextZone:
                     self.clicked = False
 
         elif event.type == pygame.KEYDOWN and self.clicked:
-            if event.key == pygame.K_BACKSPACE and len(self.texte) > 0:
-                self.texte = self.texte[:len(self.texte)-1]
+            if event.key == pygame.K_BACKSPACE: # pour counter l'unicode qui crée un caractère bizarre si c'est le seul caractère
+                if len(self.texte) > 0:
+                    self.texte = self.texte[:len(self.texte)-1]
 
             else:
                 if not self.secret:
@@ -56,7 +57,7 @@ class TextZone:
                 if self.police.size(texte)[0] < self.largeur_max:
                     if event.key == pygame.K_SPACE:
                         self.texte = self.texte + " "
-                    elif len(pygame.key.name(event.key)) == 1:
+                    elif len(event.unicode) == 1:
                         self.texte = self.texte + event.unicode
 
     def get_image(self):
