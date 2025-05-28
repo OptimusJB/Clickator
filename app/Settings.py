@@ -10,8 +10,9 @@ class Settings:
             # le """ doit être sur la même ligne que le premier setting
             fichier.write("""degré de ressemblance image=0.9
 temps entre les actions (em ms)=100
+bouton lancement macro selectionnée=p
 touche d'arrêt de la macro=p
-bouton changement coordonnées=p""") # le """ doit être sur la même ligne que le dernier setting
+bouton changement coordonnées=c""") # le """ doit être sur la même ligne que le dernier setting
             fichier.close()
 
         # chargement du fichier settings.txt

@@ -8,11 +8,15 @@ from TP import TP
 from Mouvement import Mouvement
 from Touche import Touche
 from ReturnStart import ReturnStart
+from MacroRun import MacroRun
+import PCControl
+from Settings import settings
 import pygame
 pygame.init()
 
 class MacroView:
     def __init__(self):
+        self.selection_move = None
         self.action_ouverte = None  # détermine l'action qui doit être blitée à droite
         self.rect_dimensions = pygame.rect.Rect(20 + 500 + 40, 100, 500, 1080 - 100 - 40)
         self.nom_macro = None
@@ -25,7 +29,7 @@ class MacroView:
         self.y_offset = 0
 
 
-        self.cache_haut = pygame.rect.Rect(20 + 500 + 40, 0, 500, 100)
+        self.cache_haut = pygame.rect.Rect(20 + 500 + 40 - 100, 0, 1460, 100)
         self.rect_affichage = self.rect_dimensions.copy()
         self.rect_affichage.height -= 100
 
@@ -46,19 +50,20 @@ class MacroView:
         self.rect_ajout_texte.height += 20
         self.rect_ajout_texte.centerx = self.rect_dimensions.centerx
 
-        # bouton sauvegarder macro
-        self.texte_save = Constants.police30.render("sauvegarder", True, "white")
-        self.rect_save = self.texte_save.get_rect()
-        self.rect_save.width += 20
-        self.rect_save.height += 20
-        self.rect_save.centerx = self.rect_dimensions.centerx
-        self.rect_save.y = 20
+        # bouton lancer macro
+        self.texte_launch = Constants.police30.render("lancer macro", True, "white")
+        self.rect_launch = self.texte_launch.get_rect()
+        self.rect_launch.width += 20
+        self.rect_launch.height += 20
+        self.rect_launch.centerx = self.rect_dimensions.centerx
+        self.rect_launch.y = 20
 
     def charger_macro(self):
         assert self.nom_macro != None, "nom macro pas encore initialisé"
         self.liste_actions = save.load_sauvegarde(self.nom_macro)[1:]
         self.charged = True
         self.action_ouverte = None
+        self.selection_move = None
         self.saved = True
     
     def blit(self):
@@ -97,6 +102,16 @@ class MacroView:
                 resize_screen.draw_rect(color, texte_rect, 20)
                 resize_screen.blit(texte, (texte_rect.x + 10, texte_rect.y + 10))
 
+            # blit de la selection move
+            if self.selection_move != None and self.selection_move == action:
+                move_rect = texte_rect.copy()
+                move_texte = texte.copy()
+                move_texte.set_alpha(255//2)
+
+                move_rect.center = resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())
+                resize_screen.draw_rect(Constants.saumon2, move_rect, 20)
+                resize_screen.blit(move_texte, (move_rect.x + 10, move_rect.y + 10))
+
             self.rects_actions.append(texte_rect)
 
             self.y = self.y + 100
@@ -123,14 +138,13 @@ class MacroView:
         texte_rect.center = self.rect_titre.center
         resize_screen.blit(texte, texte_rect.topleft)
 
-        # blit bouton sauvegarder
-        if not self.saved:
-            color = Constants.saumon2
-            if self.rect_save.collidepoint(resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())):
-                color = Constants.orange
+        # blit bouton lancement macro
+        color = Constants.saumon2
+        if self.rect_launch.collidepoint(resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())):
+            color = Constants.orange
 
-            resize_screen.draw_rect(color, self.rect_save, 100)
-            resize_screen.blit(self.texte_save, (self.rect_save.x + 10, self.rect_save.y + 10))
+        resize_screen.draw_rect(color, self.rect_launch, 100)
+        resize_screen.blit(self.texte_launch, (self.rect_launch.x + 10, self.rect_launch.y + 10))
 
         # appel du blit potentiel de l'action
         if not self.action_ouverte == None:
@@ -138,6 +152,10 @@ class MacroView:
                 self.action_ouverte.charged = False
                 save.sauvegarder([self.nom_macro] + self.liste_actions)
                 # self.saved = False
+
+        # check pression bouton lancement macro
+        if PCControl.check_pressed(settings.get_value("bouton lancement macro selectionnée")):
+            MacroRun(self.liste_actions).run()
 
     def ajout_action(self):
         """
@@ -204,9 +222,9 @@ class MacroView:
         elif action_choisie == "Wait":
             action_finale = Wait(["temps", "a", "1000", "non", "0"])
         elif action_choisie == "TP":
-            action_finale = TP(["coordonnées", 0, 0, "images/", "oui", 0])
+            action_finale = TP(["coordonnées", 0, 0, "images/", "non", 0])
         elif action_choisie == "Mouvement":
-            action_finale = Mouvement(["coordonnées", 0, 0, "images/", "oui", 0, 2])
+            action_finale = Mouvement(["coordonnées", 0, 0, "images/", "non", 0, 2])
         elif action_choisie == "Touche":
             action_finale = Touche(["normal", "a", "appuyer"])
         elif action_choisie == "ReturnStart":
@@ -247,6 +265,9 @@ class MacroView:
                     # écran ajout d'action
                     self.ajout_action()
 
+                elif self.rect_launch.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
+                    MacroRun(self.liste_actions).run()
+
                 elif self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
                     for rect in self.rects_actions:
                         if rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
@@ -268,6 +289,31 @@ class MacroView:
 
                             # sauvegarde
                             save.sauvegarder([self.nom_macro] + self.liste_actions)
+
+            elif event.button == 2:
+                if self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
+                    for rect in self.rects_actions:
+                        if rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
+                            index_rect = self.rects_actions.index(rect)
+                            self.selection_move = self.liste_actions[index_rect]
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if self.selection_move != None:
+                if self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
+                    for rect in self.rects_actions:
+                        if rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
+                            index_rect = self.rects_actions.index(rect)
+                            if not self.liste_actions[index_rect] == self.selection_move:
+                                # déplacement
+                                index_ancien = self.liste_actions.index(self.selection_move)
+                                self.liste_actions[index_ancien] = self.liste_actions[index_rect]
+                                self.liste_actions[index_rect] = self.selection_move
+                                self.charged = False
+
+                                # sauvegarde
+                                save.sauvegarder([self.nom_macro] + self.liste_actions)
+
+                self.selection_move = None
 
         # appel du listen_entry potentiel de l'action
         if not self.action_ouverte == None:
