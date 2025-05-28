@@ -1,20 +1,16 @@
 from Screen import resize_screen
 import Constants
 import pygame
-import time
-import PCControl
-import random
-from Settings import settings
 from AskText import AskText
+import PCControl
 from Switch import Switch
 pygame.init()
-class Wait:
+class Scroll:
     def __init__(self, liste_valeurs):
-        self.nom = "Wait"
+        self.nom = "Scroll"
         self.charged = False
         self.valeurs = liste_valeurs    # très probablement une liste de str
-        # de la forme [type attente (temps/bouton), bouton d'attente, temps d'attente (en ms), aléatoire (oui/non), dispersion si aléatoire (en ms)]
-        # tout est en str
+        # de la forme [haut/bas, longueur]
 
         self.rect_dimensions = pygame.rect.Rect(20 + 500 + 40 + 500 + 40, 100, 800, 1080 - 100 - 40)
 
@@ -30,11 +26,8 @@ class Wait:
         rect_surface.y = - self.rect_affichage.height
         rect_surface.x = 0
         pygame.draw.rect(self.surface_titre, Constants.saumon2, rect_surface, border_radius=50)
-        self.liste_elements = [Switch((1500, 120), "type attente", ["temps", "bouton"], self.valeurs[0]), # la liste doit être dans le bon ordre
-        AskText((1500, 220), "bouton(s) d'attente", self.valeurs[1], str),
-        AskText((1500, 320), "temps d'attente (en ms)", self.valeurs[2], int), 
-        Switch((1500, 420), "aléatoire", ["oui", "non"], self.valeurs[3]),
-        AskText((1500, 520), "dispersion si aléatoire (en ms)", self.valeurs[4], int)]
+        self.liste_elements = [Switch((1500, 120), "direction", ["haut", "bas"], self.valeurs[0]),   # la liste doit être dans le bon ordre
+        AskText((1500, 220), "longueur", self.valeurs[1], int)]
 
     def blit(self):
         resize_screen.draw_rect(Constants.saumon, self.rect_dimensions, 50)
@@ -62,32 +55,5 @@ class Wait:
                 return "changement" # retourne vers MacroView pour la sauvegarde
 
     def run(self):
-        # liste de la forme [type attente (temps/bouton), bouton d'attente, temps d'attente (en ms), aléatoire (oui/non), dispersion si aléatoire (en ms)]
-        assert self.valeurs[0] in ["temps", "bouton"], "problème avec la valeur de self.valeurs[0]"
-        assert self.valeurs[3] in ["oui", "non"], "problème avec la valeur de self.valeurs[3]"
-
-        if self.valeurs[0] == "temps":
-            temps = int(self.valeurs[2])
-
-            # aléatoire
-            if self.valeurs[3] == "oui":
-                temps = temps + random.randint(0 - int(self.valeurs[4]), 0 + int(self.valeurs[4]))
-
-            # ms vers secondes + reste
-            secondes = temps // 1000
-            reste = (temps % 1000) / 1000
-
-            for i in range(secondes):
-                time.sleep(1)   # seconde
-                pygame.event.get()
-                if PCControl.check_pressed(settings.get_value("touche d'arrêt de la macro")):
-                    return None
-
-            time.sleep(reste)
-            pygame.event.get()
-
-        else:
-            bouton = self.valeurs[1]
-            while not PCControl.check_pressed(bouton) or not PCControl.check_pressed(settings.get_value("touche d'arrêt de la macro")):
-                time.sleep(0.01)    # utilisation cpu à checker
-                pygame.event.get()
+        # liste de la forme
+        pass

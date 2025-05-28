@@ -3,6 +3,7 @@ import Constants
 import PCControl
 from Settings import settings
 import pygame
+import random
 from AskText import AskText
 from Switch import Switch
 pygame.init()
@@ -75,3 +76,32 @@ class TP:
 
                 self.valeurs[index_element] = element.valeur
                 return "changement" # retourne vers MacroView pour la sauvegarde
+
+    def run(self):
+        # liste de la forme [type (coordonnées / image), x, y, chemin_image, aléatoire, dispersion si aléatoire]
+        assert self.valeurs[0] in ["coordonnées", "image"], "problème avec la valeur de self.valeurs[0]"
+        assert self.valeurs[4] in ["oui", "non"], "problème avec la valeur de self.valeurs[4]"
+
+        aleatoire = self.valeurs[4]
+        if self.valeurs[0] == "coordonnées":
+            x = int(self.valeurs[1])
+            y = int(self.valeurs[2])
+
+
+        else:
+            chemin_image = self.valeurs[3]
+            image_pos = PCControl.get_image_center(chemin_image)
+            if image_pos == None:
+                print("image " + str(chemin_image) + " non trouvée")
+                return None
+
+            x = image_pos[0]
+            y = image_pos[1]
+
+        # aléatoire
+        if aleatoire:
+            x = x + random.randint(0 - int(self.valeurs[5]), 0 + int(self.valeurs[5]))
+            y = y + random.randint(0 - int(self.valeurs[5]), 0 + int(self.valeurs[5]))
+
+        pygame.event.get()
+        PCControl.teleport(x, y)

@@ -25,9 +25,9 @@ class Touche:
         rect_surface.y = - self.rect_affichage.height
         rect_surface.x = 0
         pygame.draw.rect(self.surface_titre, Constants.saumon2, rect_surface, border_radius=50)
-        self.liste_elements = [Switch((1500, 120), "type clic", ["normal", "maintenu"], self.valeurs[0]),   # la liste doit être dans le bon ordre
+        self.liste_elements = [Switch((1500, 120), "type touche", ["normal", "maintenu"], self.valeurs[0]),   # la liste doit être dans le bon ordre
         AskText((1500, 320), "touche(s)", self.valeurs[1], str),
-        Switch((1500, 220), "si clic maintenu", ["appuyer", "relacher"], self.valeurs[2])]
+        Switch((1500, 220), "si touche maintenue", ["appuyer", "relacher"], self.valeurs[2])]
 
     def blit(self):
         resize_screen.draw_rect(Constants.saumon, self.rect_dimensions, 50)

@@ -2,6 +2,7 @@ from Screen import resize_screen
 import Constants
 import pygame
 from AskText import AskText
+import PCControl
 from Switch import Switch
 pygame.init()
 class Clic:
@@ -53,3 +54,17 @@ class Clic:
 
                 self.valeurs[index_element] = element.valeur
                 return "changement" # retourne vers MacroView pour la sauvegarde
+
+    def run(self):
+        # liste de la forme [normal/maintenu, gauche/milieu/droit, appuyer/relacher]
+        assert self.valeurs[0] in ["normal", "maintenu"], "problème avec la valeur de self.valeurs[0]"
+        assert self.valeurs[1] in ["gauche", "milieu", "droit"], "problème avec la valeur de self.valeurs[1]"
+        assert self.valeurs[2] in ["appuyer", "relacher"], "problème avec la valeur de self.valeurs[2]"
+
+        if self.valeurs[0] == "normal":
+            PCControl.clic_normal(self.valeurs[1])
+        elif self.valeurs[0] == "maintenu":
+            if self.valeurs[2] == "appuyer":
+                PCControl.clic_press(self.valeurs[1])
+            else:
+                PCControl.clic_release(self.valeurs[1])

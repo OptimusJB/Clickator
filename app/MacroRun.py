@@ -1,7 +1,10 @@
+from ReturnStart import ReturnStart
+
 from Screen import resize_screen
 import PCControl
 from Settings import settings
 import Constants
+import time
 import pygame
 pygame.init()
 
@@ -19,3 +22,22 @@ class MacroRun:
         texte_rect = texte.get_rect()
         texte_rect.center = (1920//2, 1080//2)
         resize_screen.blit(texte, texte_rect)
+        resize_screen.flip()
+
+        # exécution des actions
+        pygame.event.get()
+        index_action = -1
+        while index_action < len(self.liste_actions):
+            index_action = index_action + 1
+
+            action = self.liste_actions[index_action]
+            pygame.event.get()
+            action.run()
+
+            if PCControl.check_pressed(settings.get_value("touche d'arrêt de la macro")):
+                break
+            if action == ReturnStart:
+                index_action = -1
+                continue
+
+            time.sleep(int(settings.get_value("temps entre les actions (em ms)"))/1000)

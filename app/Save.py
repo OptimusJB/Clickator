@@ -3,13 +3,14 @@ from Clic import Clic
 from Wait import Wait
 from TP import TP
 from Mouvement import Mouvement
+from Scroll import Scroll
 from Touche import Touche
 from ReturnStart import ReturnStart
 
 class Save:
     def __init__(self):
         self.contenu = None
-        self.conversion = {"Clic":Clic, "Wait":Wait, "TP":TP, "Mouvement":Mouvement, "Touche":Touche, "ReturnStart":ReturnStart}    # dictionnaire : clé = nom, valeur = objet correspondant au nom : utilisé pour load_sauvegarde
+        self.conversion = {"Clic":Clic, "Wait":Wait, "TP":TP, "Mouvement":Mouvement, "Touche":Touche, "ReturnStart":ReturnStart, "Scroll":Scroll}    # dictionnaire : clé = nom, valeur = objet correspondant au nom : utilisé pour load_sauvegarde
     
     def load_sauvegarde(self, nom_fichier):   # nom fichier sans extension
         fichier = open("data/" + nom_fichier + ".txt", "r")

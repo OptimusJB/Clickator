@@ -9,6 +9,7 @@ from Mouvement import Mouvement
 from Touche import Touche
 from ReturnStart import ReturnStart
 from MacroRun import MacroRun
+from Scroll import Scroll
 import PCControl
 from Settings import settings
 import pygame
@@ -161,7 +162,7 @@ class MacroView:
         """
         écran à part pour l'ajout d'action
         """
-        liste_actions = ["Clic", "Wait", "TP", "Mouvement", "Touche", "ReturnStart"]
+        liste_actions = ["Clic", "Wait", "TP", "Mouvement", "Touche", "Scroll", "ReturnStart"]
 
         fond_noir = pygame.surface.Surface((1920, 1080)).convert()
         fond_noir.fill((0, 0, 0))
@@ -169,7 +170,7 @@ class MacroView:
 
         # blit du fond
         resize_screen.blit(fond_noir, (0, 0))
-        rect_fond = pygame.rect.Rect(0, 0, 310, 620)    # à changer au besoin
+        rect_fond = pygame.rect.Rect(0, 0, 310, 720)    # à changer au besoin
         rect_fond.center = (1920//2, 1080//2)
         resize_screen.draw_rect(Constants.saumon, rect_fond, 50)
 
@@ -222,13 +223,15 @@ class MacroView:
         elif action_choisie == "Wait":
             action_finale = Wait(["temps", "a", "1000", "non", "0"])
         elif action_choisie == "TP":
-            action_finale = TP(["coordonnées", 0, 0, "images/", "non", 0])
+            action_finale = TP(["coordonnées", "0", "0", "images/", "non", "0"])
         elif action_choisie == "Mouvement":
-            action_finale = Mouvement(["coordonnées", 0, 0, "images/", "non", 0, 2])
+            action_finale = Mouvement(["coordonnées", "0", "0", "images/", "non", "0", "2"])
         elif action_choisie == "Touche":
             action_finale = Touche(["normal", "a", "appuyer"])
         elif action_choisie == "ReturnStart":
             action_finale = ReturnStart([])
+        elif action_choisie == "Scroll":
+            action_finale = Scroll(["bas", "10"])
         # à continuer : ajouter des instances d'action ici
         else:
             raise ValueError("action choisie non prise en charge")

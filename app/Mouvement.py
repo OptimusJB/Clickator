@@ -28,7 +28,7 @@ class Mouvement:
         rect_surface.y = - self.rect_affichage.height
         rect_surface.x = 0
         pygame.draw.rect(self.surface_titre, Constants.saumon2, rect_surface, border_radius=50)
-        self.liste_elements = [Switch((1500, 120), "type TP", ["coordonnées", "image"], self.valeurs[0]), # la liste doit être dans le bon ordre
+        self.liste_elements = [Switch((1500, 120), "type mouvement", ["coordonnées", "image"], self.valeurs[0]), # la liste doit être dans le bon ordre
                                AskText((1500, 220), "x", self.valeurs[1], int),
                                AskText((1500, 320), "y", self.valeurs[2], int),
                                AskText((1500, 420), "chemin image", self.valeurs[3], str),
