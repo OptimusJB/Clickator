@@ -1,6 +1,7 @@
 from Screen import resize_screen
 import Constants
 import pygame
+import sys
 from AskText import AskText
 import PCControl
 from Switch import Switch
@@ -55,5 +56,20 @@ class Scroll:
                 return "changement" # retourne vers MacroView pour la sauvegarde
 
     def run(self):
-        # liste de la forme
-        pass
+        def check_exit():
+            """
+            permet de rafraichir avec pygame.event.get(), tout en
+            """
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+        # liste de la forme [haut/bas, longueur]
+        direction = self.valeurs[0]
+        longueur = int(self.valeurs[1])
+
+        if direction == "bas":
+            longueur = -1 * longueur
+
+        PCControl.scroll(longueur)

@@ -1,5 +1,6 @@
 from Screen import resize_screen
 import Constants
+import sys
 import pygame
 from AskText import AskText
 import PCControl
@@ -56,6 +57,15 @@ class Clic:
                 return "changement" # retourne vers MacroView pour la sauvegarde
 
     def run(self):
+        def check_exit():
+            """
+            permet de rafraichir avec pygame.event.get(), tout en
+            """
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
         # liste de la forme [normal/maintenu, gauche/milieu/droit, appuyer/relacher]
         assert self.valeurs[0] in ["normal", "maintenu"], "problème avec la valeur de self.valeurs[0]"
         assert self.valeurs[1] in ["gauche", "milieu", "droit"], "problème avec la valeur de self.valeurs[1]"

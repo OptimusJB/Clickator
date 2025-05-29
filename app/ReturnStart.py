@@ -54,3 +54,6 @@ class ReturnStart:
 
                 self.valeurs[index_element] = element.valeur
                 return "changement" # retourne vers MacroView pour la sauvegarde
+
+    def run(self):
+        pass

@@ -154,6 +154,7 @@ class ListMacroView:
                             fichier.close()
                             self.texte_creation.texte = ""
                             self.charged = False
+                            macro_view.nom_macro = None
             
             elif event.button == 3:
                 if self.rect_affichage.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
@@ -162,6 +163,7 @@ class ListMacroView:
                             macro_choisie = self.liste_macros[self.rects_macros.index(rect)]
                             os.remove("data/" + macro_choisie + ".txt")
                             self.charged = False
+                            macro_view.nom_macro = None
         
         elif event.type == pygame.MOUSEWHEEL:
             if self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())):

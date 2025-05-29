@@ -1,5 +1,0 @@
-degré de ressemblance image=0.9
-temps entre les actions (em ms)=100
-bouton lancement macro selectionnée=p
-touche d'arrêt de la macro=p
-bouton changement coordonnées=c

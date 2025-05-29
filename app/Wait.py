@@ -1,5 +1,6 @@
 from Screen import resize_screen
 import Constants
+import sys
 import pygame
 import time
 import PCControl
@@ -62,6 +63,15 @@ class Wait:
                 return "changement" # retourne vers MacroView pour la sauvegarde
 
     def run(self):
+        def check_exit():
+            """
+            permet de rafraichir avec pygame.event.get(), tout en
+            """
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
         # liste de la forme [type attente (temps/bouton), bouton d'attente, temps d'attente (en ms), aléatoire (oui/non), dispersion si aléatoire (en ms)]
         assert self.valeurs[0] in ["temps", "bouton"], "problème avec la valeur de self.valeurs[0]"
         assert self.valeurs[3] in ["oui", "non"], "problème avec la valeur de self.valeurs[3]"
@@ -71,23 +81,24 @@ class Wait:
 
             # aléatoire
             if self.valeurs[3] == "oui":
-                temps = temps + random.randint(0 - int(self.valeurs[4]), 0 + int(self.valeurs[4]))
+                temps = temps + random.randint(0, 0 + int(self.valeurs[4]))
+                print("temps random", temps)
 
             # ms vers secondes + reste
             secondes = temps // 1000
             reste = (temps % 1000) / 1000
 
-            for i in range(secondes):
-                time.sleep(1)   # seconde
-                pygame.event.get()
+            for i in range(secondes * 10):
+                time.sleep(0.1)   # seconde
+                check_exit()
                 if PCControl.check_pressed(settings.get_value("touche d'arrêt de la macro")):
                     return None
 
             time.sleep(reste)
-            pygame.event.get()
+            check_exit()
 
         else:
             bouton = self.valeurs[1]
-            while not PCControl.check_pressed(bouton) or not PCControl.check_pressed(settings.get_value("touche d'arrêt de la macro")):
+            while not PCControl.check_pressed(bouton) and not PCControl.check_pressed(settings.get_value("touche d'arrêt de la macro")):
                 time.sleep(0.01)    # utilisation cpu à checker
-                pygame.event.get()
+                check_exit()

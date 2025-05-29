@@ -2,3 +2,7 @@ TP et Mouvement : possibilité de changer x et y avec la touche p
 pour wait et touche : tous les caractères entrés seront pris en compte
 settings : degré de ressemblance, temps entre les actions, touche d'arrêt, bouton changement coordonnées
 il est possible de mettre plusieurs lettres dans les settings
+la dispersion n'ajoute qu'en positif (le temps / coordonnées de base sont le minimum)
+à la fin de la macro, toutes les touches sont relachées
+le logiciel recrée settings.txt avec les paramètres de base s'il n'est pas là
+ne fonctionne pas sur les jeux (directinput)

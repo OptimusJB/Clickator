@@ -1,6 +1,7 @@
 from Screen import resize_screen
 import Constants
 import PCControl
+import sys
 from Settings import settings
 import pygame
 import random
@@ -33,7 +34,7 @@ class TP:
         AskText((1500, 220), "x", self.valeurs[1], int),
         AskText((1500, 320), "y", self.valeurs[2], int),
         AskText((1500, 420), "chemin image", self.valeurs[3], str),
-        Switch((1500, 520), "aléatoire", ["oui", "non"], self.valeurs[4]),
+        Switch((1500, 520), "coordonnées aléatoire", ["oui", "non"], self.valeurs[4]),
         AskText((1500, 620), "dispersion si aléatoire (en ms)", self.valeurs[5], int)]
 
 
@@ -78,6 +79,15 @@ class TP:
                 return "changement" # retourne vers MacroView pour la sauvegarde
 
     def run(self):
+        def check_exit():
+            """
+            permet de rafraichir avec pygame.event.get(), tout en
+            """
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
         # liste de la forme [type (coordonnées / image), x, y, chemin_image, aléatoire, dispersion si aléatoire]
         assert self.valeurs[0] in ["coordonnées", "image"], "problème avec la valeur de self.valeurs[0]"
         assert self.valeurs[4] in ["oui", "non"], "problème avec la valeur de self.valeurs[4]"
@@ -91,17 +101,24 @@ class TP:
         else:
             chemin_image = self.valeurs[3]
             image_pos = PCControl.get_image_center(chemin_image)
-            if image_pos == None:
-                print("image " + str(chemin_image) + " non trouvée")
+            if image_pos == "non trouvé sur l'écran":
+                print("image " + str(chemin_image) + " non trouvée sur l'écran")
+                return None
+            elif image_pos == "pas de fichier":
+                print("le fichier " + str(chemin_image) + " ne peut pas être ouvert")
                 return None
 
             x = image_pos[0]
             y = image_pos[1]
+            #print(int(x), int(y))
 
         # aléatoire
-        if aleatoire:
-            x = x + random.randint(0 - int(self.valeurs[5]), 0 + int(self.valeurs[5]))
-            y = y + random.randint(0 - int(self.valeurs[5]), 0 + int(self.valeurs[5]))
+        if aleatoire == "oui":
+            x = x + random.randint(0, 0 + int(self.valeurs[5]))
+            y = y + random.randint(0, 0 + int(self.valeurs[5]))
+            check = PCControl.check_size(x, y)
+            x = check[0]
+            y = check[1]
 
-        pygame.event.get()
+        check_exit()
         PCControl.teleport(x, y)

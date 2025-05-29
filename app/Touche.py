@@ -2,6 +2,8 @@ from Screen import resize_screen
 import Constants
 import pygame
 from AskText import AskText
+import sys
+import PCControl
 from Switch import Switch
 pygame.init()
 class Touche:
@@ -53,3 +55,25 @@ class Touche:
 
                 self.valeurs[index_element] = element.valeur
                 return "changement" # retourne vers MacroView pour la sauvegarde
+
+    def run(self):
+        def check_exit():
+            """
+            permet de rafraichir avec pygame.event.get(), tout en
+            """
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+        # liste de la forme [normal/maintenu, gauche/milieu/droit, appuyer/relacher]
+        assert self.valeurs[0] in ["normal", "maintenu"], "problème avec la valeur de self.valeurs[0]"
+        assert self.valeurs[2] in ["appuyer", "relacher"], "problème avec la valeur de self.valeurs[2]"
+
+        if self.valeurs[0] == "normal":
+            PCControl.touche_normal(self.valeurs[1])
+        elif self.valeurs[0] == "maintenu":
+            if self.valeurs[2] == "appuyer":
+                PCControl.touche_press(self.valeurs[1])
+            else:
+                PCControl.touche_release(self.valeurs[1])
