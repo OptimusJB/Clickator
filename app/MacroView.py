@@ -225,7 +225,7 @@ class MacroView:
         elif action_choisie == "TP":
             action_finale = TP(["coordonnées", "0", "0", "images/", "non", "0"])
         elif action_choisie == "Mouvement":
-            action_finale = Mouvement(["coordonnées", "0", "0", "images/", "non", "0", "2"])
+            action_finale = Mouvement(["coordonnées", "0", "0", "images/", "non", "0", "2000"])
         elif action_choisie == "Touche":
             action_finale = Touche(["normal", "a", "appuyer"])
         elif action_choisie == "ReturnStart":

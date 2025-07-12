@@ -1,13 +1,15 @@
-# ce fichier contient l'intégralité des éléments mouse, pyautogui et keyboard (pour ne pas avoir à rechecker tout le code si les librairies deviennent obsolètes)
+# ce fichier contient l'intégralité des éléments pyautogui et keyboard (pour ne pas avoir à rechecker tout le code si les librairies deviennent obsolètes)
 # note importante : il est possible que les fonctions ne fonctionnent pas si la fenêtre pygame ne répond pas (du genre keyboard.is_pressed() qui semble ne pas marcher dans ce cas là)
-# normalement compatible avec les jeux
-import mouse
+# 2e note importante : d'après un test, keyboard ne semble pas détecter les touches pressées par pyautogui
 import keyboard
+import pyautogui
+
+from Settings import settings
 import pygame
 import time
-import pyautogui
-from Settings import settings
 pygame.init()
+
+pyautogui.PAUSE = 0 # permet d'enlever la pause entre les fonctions de pyautogui
 
 def check_pressed(touche:str):
     """
@@ -30,7 +32,7 @@ def get_mouse_pos():
     retourne un tuple de la forme (x, y) représentant la valeur de la souris sur l'écran
     le point (0, 0) est en haut à gauche
     """
-    return mouse.get_position()
+    return pyautogui.position()
 
 def wait_for_not_pressed(touche:str):
     """
@@ -62,8 +64,8 @@ def clic_normal(touche:str):
     if not touche in ["gauche", "milieu", "droit"]:
         print("clic : touche invalide")
         return False
-    dico = {"gauche": mouse.LEFT, "milieu": mouse.MIDDLE, "droit": mouse.RIGHT}
-    mouse.click(button=dico[touche])
+    dico = {"gauche":"left", "milieu":"middle", "droit":"right"}
+    pyautogui.click(button=dico[touche])
 
 def touche_normal(touche:str):
     """
@@ -73,10 +75,10 @@ def touche_normal(touche:str):
     Marche même si la fenêtre est en arrière-plan.
     """
     for element in touche:
-        try:
-            keyboard.send(element)
-        except:
-            print(element + " : touche inconnue")
+        if not element in pyautogui.KEYBOARD_KEYS:
+            print("touche " + element + " inconnue")
+        else:
+            pyautogui.press(element)
 
 def clic_press(touche:str):
     """
@@ -87,8 +89,8 @@ def clic_press(touche:str):
     if not touche in ["gauche", "milieu", "droit"]:
         print("clic maintenu: touche invalide")
         return False
-    dico = {"gauche": mouse.LEFT, "milieu": mouse.MIDDLE, "droit": mouse.RIGHT}
-    mouse.press(button=dico[touche])
+    dico = {"gauche": "left", "milieu": "middle", "droit": "right"}
+    pyautogui.mouseDown(button=dico[touche])
 
 def touche_press(touche):
     """
@@ -97,10 +99,10 @@ def touche_press(touche):
     Marche même si la fenêtre est en arrière-plan.
     """
     for element in touche:
-        try:
-            keyboard.press(element)
-        except:
-            print(element + " : touche inconnue")
+        if not element in pyautogui.KEYBOARD_KEYS:
+            print("touche " + element + " inconnue")
+        else:
+            pyautogui.keyDown(element)
 
 def clic_release(touche:str):
     """
@@ -111,8 +113,8 @@ def clic_release(touche:str):
     if not touche in ["gauche", "milieu", "droit"]:
         print("clic release : touche invalide")
         return False
-    dico = {"gauche": mouse.LEFT, "milieu": mouse.MIDDLE, "droit": mouse.RIGHT}
-    mouse.release(button=dico[touche])
+    dico = {"gauche": "left", "milieu": "middle", "droit": "right"}
+    pyautogui.mouseUp(button=dico[touche])
 
 def touche_release(touche):
     """
@@ -121,28 +123,27 @@ def touche_release(touche):
     Marche même si la fenêtre est en arrière-plan.
     """
     for element in touche:
-        for element in touche:
-            try:
-                keyboard.release(element)
-            except:
-                print(element + " : touche inconnue")
+        if not element in pyautogui.KEYBOARD_KEYS:
+            print("touche " + element + " inconnue")
+        else:
+            pyautogui.keyUp(element)
 
 def release_all_keys():
     """
     relève toutes les touches potentiellement enfoncées
     Marche même si la fenêtre est en arrière-plan.
     """
-    for element in "azertyuiopmlkjhgfdsqwxcvbn,;:!&é'(-è_çà)=0123456789²*-+/?./§£µ%~#{[|`^@]}" + '"':
-        keyboard.release(element)
-    for element in [mouse.LEFT, mouse.MIDDLE, mouse.RIGHT]:
-        mouse.release(element)
+    for element in pyautogui.KEYBOARD_KEYS:
+        pyautogui.keyUp(element)
+    for element in ["left", "middle", "right"]:
+        pyautogui.mouseUp(button=element)
 
 def teleport(x:int, y:int):
     """
     téléporte la souris aux coordonnées passées en paramètre
     Marche même si la fenêtre est en arrière-plan.
     """
-    mouse.move(x, y)
+    pyautogui.moveTo(x, y)
 
 def mouvement(x:int, y:int, temps:int):
     """
@@ -150,7 +151,7 @@ def mouvement(x:int, y:int, temps:int):
     le setting 'degré de ressemblance image' est utilisé
     Marche même si la fenêtre est en arrière-plan.
     """
-    mouse.move(x, y, duration=temps/1000)  # ms --> secondes
+    pyautogui.moveTo(x, y, temps/1000)  # ms --> secondes
 
 def get_image_center(chemin_image:str):
     """
@@ -171,7 +172,7 @@ def scroll(valeur:int):
     si valeur négative, scroll vers le bas. Si positif, vers le haut
     Marche même si la fenêtre est en arrière-plan.
     """
-    mouse.wheel(valeur)
+    pyautogui.scroll(valeur)
 
 def check_size(x, y):
     """
