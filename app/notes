@@ -5,3 +5,4 @@ il est possible de mettre plusieurs lettres dans les settings
 la dispersion n'ajoute qu'en positif (le temps / coordonnées de base sont le minimum)
 à la fin de la macro, toutes les touches sont relachées
 le logiciel recrée settings.txt avec les paramètres de base s'il n'est pas là
+en faisant shift + clic sur un action, on la clone

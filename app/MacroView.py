@@ -98,7 +98,7 @@ class MacroView:
             if texte_rect.colliderect(self.rect_affichage):
                 # changement de couleur si la souris est dessus
                 color = Constants.saumon2
-                if texte_rect.collidepoint(resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())):
+                if texte_rect.collidepoint(resize_screen.get_calcul_mouse_cos(pygame.mouse.get_pos())) or action == self.action_ouverte:
                     color = Constants.orange
                 resize_screen.draw_rect(color, texte_rect, 20)
                 resize_screen.blit(texte, (texte_rect.x + 10, texte_rect.y + 10))
@@ -274,10 +274,20 @@ class MacroView:
                 elif self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
                     for rect in self.rects_actions:
                         if rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
-                            # ouverture de la page de l'action cliquée
-                            index_rect = self.rects_actions.index(rect)
-                            self.action_ouverte = self.liste_actions[index_rect]
-                            self.action_ouverte.charged = False
+                            if not pygame.key.get_pressed()[pygame.K_LSHIFT]:
+                                # ouverture de la page de l'action cliquée
+                                index_rect = self.rects_actions.index(rect)
+                                self.action_ouverte = self.liste_actions[index_rect]
+                                self.action_ouverte.charged = False
+                            else:
+                                # shift pressé, donc clonage
+                                index_rect = self.rects_actions.index(rect)
+                                new_action = type(self.liste_actions[index_rect])(self.liste_actions[index_rect].valeurs)
+                                self.liste_actions.insert(index_rect, new_action)
+                                self.charged = False
+
+                                # sauvegarde
+                                save.sauvegarder([self.nom_macro] + self.liste_actions)
 
             elif event.button == 3:
                 if self.rect_dimensions.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):

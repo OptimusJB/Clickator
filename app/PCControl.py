@@ -1,5 +1,6 @@
 # ce fichier contient l'intégralité des éléments mouse, pyautogui et keyboard (pour ne pas avoir à rechecker tout le code si les librairies deviennent obsolètes)
 # note importante : il est possible que les fonctions ne fonctionnent pas si la fenêtre pygame ne répond pas (du genre keyboard.is_pressed() qui semble ne pas marcher dans ce cas là)
+# keyboard.is_pressed() ne semble pas détecter les touches appuyées par le programme
 # normalement compatible avec les jeux
 import mouse
 import keyboard
@@ -121,11 +122,10 @@ def touche_release(touche):
     Marche même si la fenêtre est en arrière-plan.
     """
     for element in touche:
-        for element in touche:
-            try:
-                keyboard.release(element)
-            except:
-                print(element + " : touche inconnue")
+        try:
+            keyboard.release(element)
+        except:
+            print(element + " : touche inconnue")
 
 def release_all_keys():
     """
