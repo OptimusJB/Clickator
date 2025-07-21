@@ -140,6 +140,7 @@ class ListMacroView:
                             macro_choisie = self.liste_macros[self.rects_macros.index(rect)]
                             macro_view.charged = False
                             macro_view.nom_macro = macro_choisie
+                            macro_view.y_offset = 0
                 
                 elif self.creation_btn_rect.collidepoint(resize_screen.get_calcul_mouse_cos(event.pos)):
                     if not self.texte_creation.texte + ".txt" in os.listdir("data/"):
