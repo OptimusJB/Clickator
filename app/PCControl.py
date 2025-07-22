@@ -73,6 +73,16 @@ def touche_normal(touche:str):
     exemple touche si plusieurs touches : abcde
     Marche même si la fenêtre est en arrière-plan.
     """
+    if touche[:2] == "./":
+        touche = touche.replace("./", "")
+        touche = touche.replace(" ", "")    # on enlève les espaces
+        for element in touche.split("+"):
+            try:
+                keyboard.send(element)
+            except:
+                print(element + " : touche inconnue")
+        return None
+
     for element in touche:
         try:
             keyboard.send(element)
@@ -91,12 +101,23 @@ def clic_press(touche:str):
     dico = {"gauche": mouse.LEFT, "milieu": mouse.MIDDLE, "droit": mouse.RIGHT}
     mouse.press(button=dico[touche])
 
-def touche_press(touche):
+def touche_press(touche:str):
     """
     enfonce la ou les touches de clavier passées en paramètre
     exemple touche si plusieurs touches : abcde
     Marche même si la fenêtre est en arrière-plan.
+    si ./ au début, exécute chaque éléments séparés par des + (ex : ctrl+alt+esc)
     """
+    if touche[:2] == "./":
+        touche = touche.replace("./", "")
+        touche = touche.replace(" ", "")    # on enlève les espaces
+        for element in touche.split("+"):
+            try:
+                keyboard.press(element)
+            except:
+                print(element + " : touche inconnue")
+        return None
+
     for element in touche:
         try:
             keyboard.press(element)
@@ -121,6 +142,16 @@ def touche_release(touche):
     exemple touche si plusieurs touches : abcde
     Marche même si la fenêtre est en arrière-plan.
     """
+    if touche[:2] == "./":
+        touche = touche.replace("./", "")
+        touche = touche.replace(" ", "")    # on enlève les espaces
+        for element in touche.split("+"):
+            try:
+                keyboard.release(element)
+            except:
+                print(element + " : touche inconnue")
+        return None
+
     for element in touche:
         try:
             keyboard.release(element)
