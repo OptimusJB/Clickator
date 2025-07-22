@@ -50,7 +50,17 @@ class MacroRun:
                 index_action = -1
                 continue
 
-            time.sleep(int(settings.get_value("temps entre les actions (em ms)"))/1000)
+            temps = int(settings.get_value("temps entre les actions (em ms)"))
+            # ms vers secondes + reste
+            secondes = temps // 1000
+            reste = (temps % 1000) / 1000
+
+            for i in range(secondes * 10):
+                time.sleep(0.1)
+                check_exit()
+            time.sleep(reste)
+            check_exit()
+            #time.sleep(int(settings.get_value("temps entre les actions (em ms)"))/1000)
 
         PCControl.wait_for_not_pressed(settings.get_value("touche d'arrêt de la macro"))
         #PCControl.release_all_keys()  # on enlève parce que ça fout n'imp (ça release aussi les touches non enfoncées)
