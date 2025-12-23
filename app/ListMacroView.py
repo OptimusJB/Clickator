@@ -37,7 +37,8 @@ class ListMacroView:
         # création macro
         self.texte_creation = TextZone(Constants.police40)
         self.rect_texte_creation = pygame.rect.Rect(self.rect_creation.left + 20, self.rect_creation.top + 20, self.rect_affichage.width - 40, 80)
-        self.texte_creation.set_rect(self.rect_texte_creation)
+        self.texte_creation.set_rect(self.rect_texte_creation.copy())
+        self.texte_creation.get_rect().width -= 20
         self.texte_creation.set_largeur_max(self.rect_texte_creation.width - 20 - 30)
 
         self.texte_creation_btn = Constants.police40.render("créer macro", True, "white")
@@ -46,7 +47,29 @@ class ListMacroView:
         self.creation_btn_rect.centerx = self.rect_texte_creation.centerx
         self.creation_btn_rect.top = self.rect_texte_creation.bottom + 10
 
+        # temps offset
+        self.temps_offset = 0
+
+    def maj_offset(self):
+        if self.temps_offset > 0:
+            for i in range((abs(self.temps_offset) // 5 + 1)):
+                if self.y_offset < 0:  # condition scroll
+                    self.y_offset += 25
+            for i in range((abs(self.temps_offset) // 5) + 1):
+                if self.temps_offset > 0:
+                    self.temps_offset -= 1
+
+        elif self.temps_offset < 0:
+            for i in range((abs(self.temps_offset) // 5 + 1)):
+                if self.y + self.y_offset > self.rect_dimensions.bottom - 20:  # condition scroll
+                    self.y_offset -= 25
+            for i in range((abs(self.temps_offset) // 5) + 1):
+                if self.temps_offset < 0:
+                    self.temps_offset += 1
     def blit(self):
+        # on met à jour le scrolling
+        self.maj_offset()
+
         self.rects_macros = []
         # blit du fond
         resize_screen.draw_rect(Constants.saumon, self.rect_dimensions, 50)
@@ -99,8 +122,8 @@ class ListMacroView:
         # blit éléments création macro
         resize_screen.blit(self.surface_creation, self.rect_creation.topleft)
         
-        resize_screen.draw_rect(Constants.saumon, self.texte_creation.get_rect(), 20)
-        resize_screen.blit(self.texte_creation.get_image(), (self.texte_creation.get_rect().left + 20, self.texte_creation.get_rect().top + 10))
+        resize_screen.draw_rect(Constants.saumon, self.rect_texte_creation, 20)
+        resize_screen.blit(self.texte_creation.get_image(), (self.rect_texte_creation.left + 20, self.rect_texte_creation.top + 10))
 
         # blit du bouton création de macro
         resize_screen.draw_rect(Constants.saumon, self.creation_btn_rect, 20)
@@ -171,10 +194,12 @@ class ListMacroView:
                 for i in range(abs(event.y)):
                     if event.y < 0:
                         if self.y + self.y_offset > self.rect_affichage.bottom:
-                            self.y_offset -= 30
+                            self.temps_offset -= 5
+                            #self.y_offset -= 30
                     
                     elif event.y > 0:
                         if self.y_offset < 0:
-                            self.y_offset += 30
+                            self.temps_offset += 5
+                            #self.y_offset += 30
         
 list_macro_view = ListMacroView()

@@ -62,7 +62,8 @@ class AskText:
         # création texte
         texte = TextZone(Constants.police40)
         rect_texte = pygame.rect.Rect(rect_fond.left + 20, rect_fond.top + 150, rect_fond.width - 20 - 20, 80)
-        texte.set_rect(rect_texte)
+        texte.set_rect(rect_texte.copy())
+        texte.get_rect().width -= 20
         texte.set_largeur_max(rect_texte.width - 20 - 20)
         texte.texte = self.valeur
         texte.clicked = True

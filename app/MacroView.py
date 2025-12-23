@@ -59,6 +59,26 @@ class MacroView:
         self.rect_launch.centerx = self.rect_dimensions.centerx
         self.rect_launch.y = 20
 
+        # temps offset
+        self.temps_offset = 0
+
+    def maj_offset(self):
+        if self.temps_offset > 0:
+            for i in range((abs(self.temps_offset) // 5 + 1)):
+                if self.y_offset < 0:  # condition scroll
+                    self.y_offset += 25
+            for i in range((abs(self.temps_offset) // 5) + 1):
+                if self.temps_offset > 0:
+                    self.temps_offset -= 1
+
+        elif self.temps_offset < 0:
+            for i in range((abs(self.temps_offset) // 5 + 1)):
+                if self.y + self.y_offset > self.rect_dimensions.bottom - 20:  # condition scroll
+                    self.y_offset -= 25
+            for i in range((abs(self.temps_offset) // 5) + 1):
+                if self.temps_offset < 0:
+                    self.temps_offset += 1
+
     def charger_macro(self):
         assert self.nom_macro != None, "nom macro pas encore initialisé"
         self.liste_actions = save.load_sauvegarde(self.nom_macro)[1:]
@@ -68,6 +88,9 @@ class MacroView:
         self.saved = True
     
     def blit(self):
+        # on met à jour le scrolling
+        self.maj_offset()
+
         self.rects_actions = []
         if self.nom_macro == None:
             return None
@@ -256,11 +279,13 @@ class MacroView:
                 for i in range(abs(event.y)):
                     if event.y < 0:
                         if self.y + self.y_offset > self.rect_affichage.bottom:
-                            self.y_offset -= 30
+                            self.temps_offset -= 5
+                            #self.y_offset -= 30
 
                     elif event.y > 0:
                         if self.y_offset < 0:
-                            self.y_offset += 30
+                            self.temps_offset += 5
+                            #self.y_offset += 30
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
