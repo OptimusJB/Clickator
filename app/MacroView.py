@@ -344,8 +344,12 @@ class MacroView:
                             if not self.liste_actions[index_rect] == self.selection_move:
                                 # déplacement
                                 index_ancien = self.liste_actions.index(self.selection_move)
+                                self.liste_actions.pop(index_ancien)
+                                self.liste_actions.insert(index_rect, self.selection_move)
+                                """
                                 self.liste_actions[index_ancien] = self.liste_actions[index_rect]
                                 self.liste_actions[index_rect] = self.selection_move
+                                """
                                 self.charged = False
 
                                 # sauvegarde
